@@ -53,7 +53,7 @@ spec:
           ports:
             - containerPort: 3000
 
-          volumeMounts:
+          volumeMounts: 
             - name: backend-logs
               mountPath: /logs
 
