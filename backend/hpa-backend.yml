@@ -13,8 +13,8 @@ spec:
         app: backend
     spec:
       containers:
-        - name: backend
-          image: TU_IMAGEN
+        
+          
           ports:
             - containerPort: 3000
           resources:
