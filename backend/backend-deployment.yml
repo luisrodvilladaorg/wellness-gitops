@@ -8,7 +8,7 @@ spec:
 
   strategy:
     type: RollingUpdate
-    rollingUpdate:
+    rollingUpdate
       maxUnavailable: 1
       maxSurge: 1
 
@@ -51,7 +51,7 @@ spec:
         - name: backend
           image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:v2.1.11
           ports:
-            - containerPort: 3000
+            - containerPort: 9000
 
           volumeMounts: 
             - name: backend-logs
