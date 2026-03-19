@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgres-init
+  namespace: dev
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      containers:
+      - name: init-db
+        image: postgres:16-alpine
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for Postgres..."
+
+          until pg_isready -h postgres-service -p 5432; do
+            sleep 2
+          done
+
+          echo "Running init.sql..."
+          export PGPASSWORD="$POSTGRES_PASSWORD"
+          psql \
+            -h postgres-service \
+            -U "$POSTGRES_USER" \
+            -d "$POSTGRES_DB" \
+            -f /init/init.sql
+        envFrom:
+        - secretRef:
+            name: postgres-secret
+        volumeMounts:
+        - mountPath: /init
+          name: init-sql-volume
+      restartPolicy: OnFailure
+      volumes:
+      - name: init-sql-volume
+        configMap:
+          name: postgres-init

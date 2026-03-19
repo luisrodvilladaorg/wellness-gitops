@@ -1,0 +1,150 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "39"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"backend","namespace":"default"},"spec":{"replicas":2,"revisionHistoryLimit":5,"selector":{"matchLabels":{"app":"backend"}},"strategy":{"rollingUpdate":{"maxSurge":1,"maxUnavailable":1},"type":"RollingUpdate"},"template":{"metadata":{"annotations":{"deployed-by":"luisrodvillada","description":"Backend service for Wellness Ops application","prometheus.io/port":"3000","prometheus.io/scrape":"true"},"labels":{"app":"backend","env":"dev","version":"v1.0.7"}},"spec":{"containers":[{"envFrom":[{"configMapRef":{"name":"backend-config"}},{"secretRef":{"name":"backend-secret"}},{"secretRef":{"name":"backend-jwt-secret"}}],"image":"ghcr.io/luisrodvilladaorg/wellness-ops-backend:v2.1.14","lifecycle":{"preStop":{"exec":{"command":["sh","-c","sleep 5"]}}},"livenessProbe":{"failureThreshold":3,"httpGet":{"path":"/api/health","port":3000},"initialDelaySeconds":30,"periodSeconds":10},"name":"backend","ports":[{"containerPort":3000}],"readinessProbe":{"failureThreshold":3,"httpGet":{"path":"/api/health","port":3000},"initialDelaySeconds":30,"periodSeconds":5},"resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}},"volumeMounts":[{"mountPath":"/logs","name":"backend-logs"}]},{"command":["sh","-c","mkdir -p /logs\ntouch /logs/app.log\necho \"Sidecar started...\"\ntail -n+1 -F /logs/app.log\n"],"image":"busybox","name":"log-sidecar","volumeMounts":[{"mountPath":"/logs","name":"backend-logs"}]}],"initContainers":[{"command":["sh","-c","until pg_isready -h postgres-service -p 5432; do\n  echo \"Waiting for PostgreSQL...\"\n  sleep 2\ndone\n"],"image":"ghcr.io/luisrodvilladaorg/wellness-ops-postgres-init:latest","name":"wait-for-postgres"}],"terminationGracePeriodSeconds":16,"volumes":[{"emptyDir":{},"name":"backend-logs"}]}}}}
+  creationTimestamp: "2026-03-09T20:08:42Z"
+  generation: 53
+  name: backend
+  namespace: dev
+  resourceVersion: "278686"
+  uid: 5966efbf-b418-4e00-a910-e94273c49970
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: backend
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        deployed-by: luisrodvillada
+        description: Backend service for Wellness Ops application
+        kubectl.kubernetes.io/restartedAt: "2026-03-17T21:45:18+01:00"
+        prometheus.io/port: "3000"
+        prometheus.io/scrape: "true"
+      labels:
+        app: backend
+        env: dev
+        version: v1.0.7
+    spec:
+      containers:
+      - envFrom:
+        - configMapRef:
+            name: backend-config
+        - secretRef:
+            name: backend-secret
+        - secretRef:
+            name: backend-jwt-secret
+        image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:v2.1.14
+        imagePullPolicy: IfNotPresent
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - sh
+              - -c
+              - sleep 5
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/health
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: backend
+        ports:
+        - containerPort: 3000
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/health
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /logs
+          name: backend-logs
+      - command:
+        - sh
+        - -c
+        - |
+          mkdir -p /logs
+          touch /logs/app.log
+          echo "Sidecar started..."
+          tail -n+1 -F /logs/app.log
+        image: busybox
+        imagePullPolicy: Always
+        name: log-sidecar
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /logs
+          name: backend-logs
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - |
+          until pg_isready -h postgres-service -p 5432; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+        image: ghcr.io/luisrodvilladaorg/wellness-ops-postgres-init:latest
+        imagePullPolicy: Always
+        name: wait-for-postgres
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 16
+      volumes:
+      - emptyDir: {}
+        name: backend-logs
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2026-03-16T19:10:05Z"
+    lastUpdateTime: "2026-03-17T20:45:54Z"
+    message: ReplicaSet "backend-5cf68975d6" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2026-03-18T10:11:15Z"
+    lastUpdateTime: "2026-03-18T10:11:15Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  observedGeneration: 53
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1

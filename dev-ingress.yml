@@ -1,0 +1,35 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wellness-dev-ingress
+  namespace: dev
+  annotations:
+    cert-manager.io/cluster-issuer: selfsigned-issuer
+spec:
+  ingressClassName: nginx
+
+  tls:
+  - hosts:
+    - dev.wellness.local
+    secretName: dev-wellness-tls
+
+  rules:
+  - host: dev.wellness.local
+    http:
+      paths:
+
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-service
+            port:
+              number: 3000
+
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-service
+            port:
+              number: 80
