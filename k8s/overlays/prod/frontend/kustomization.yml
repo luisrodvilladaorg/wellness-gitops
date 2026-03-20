@@ -6,5 +6,3 @@ resources:
 
 namespace: default
 
-commonLabels:
-  env: prod
