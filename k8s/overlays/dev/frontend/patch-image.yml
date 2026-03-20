@@ -7,4 +7,4 @@ spec:
     spec:
       containers:
         - name: frontend-deployment
-          image: ghcr.io/luisrodvilladaorg/wellness-ops-frontend:47bdf8107998616ff90b46d8eaefab9b73553a78
+          image: ghcr.io/luisrodvilladaorg/wellness-ops-frontend:b6ffe3e749043df0aad18299720d28ef84b3bc08
