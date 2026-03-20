@@ -8,7 +8,7 @@ metadata:
   creationTimestamp: "2026-03-09T20:08:42Z"
   generation: 53
   name: backend
-  namespace: dev
+  
   resourceVersion: "278686"
   uid: 5966efbf-b418-4e00-a910-e94273c49970
 spec:
