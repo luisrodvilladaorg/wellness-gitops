@@ -6,3 +6,6 @@ resources:
   - ../../../base/backend
 
 namespace: dev
+
+patchesStrategicMerge:
+  - patch-image.yml
