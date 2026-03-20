@@ -8,3 +8,6 @@ namespace: dev
 
 commonLabels:
   env: dev
+
+patchesStrategicMerge:
+  - patch-image.yml  
