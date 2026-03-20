@@ -1,6 +1,7 @@
-# k8s/overlays/dev/kustomization.yml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - backend
+  - ../../../base/postgres
+
+namespace: dev
