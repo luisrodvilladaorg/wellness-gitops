@@ -4,7 +4,8 @@ metadata:
   name: backend
 spec:
   template:
-    spec:
+    spec:      
       containers:
         - name: backend
           image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:dce5f1b981f1de25a0b776448d3247ccb7e21a70
+          
