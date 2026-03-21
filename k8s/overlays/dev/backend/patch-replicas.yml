@@ -3,7 +3,4 @@ kind: Deployment
 metadata:
   name: backend
 spec:
-  template:
-    spec:
-      replicas: 1
-       
+  replicas: 1
