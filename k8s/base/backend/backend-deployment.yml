@@ -37,7 +37,7 @@ spec:
 
       containers:
       - name: backend
-        image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:base
+        image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:base-broken
         imagePullPolicy: IfNotPresent
 
         envFrom:
