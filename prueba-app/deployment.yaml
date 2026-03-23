@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: 1012362641/mi-app:v2
+          image: 1012362641/app:v2
           ports:
             - containerPort: 80
           
