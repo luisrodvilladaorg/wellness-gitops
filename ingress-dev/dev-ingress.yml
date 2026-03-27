@@ -3,15 +3,14 @@ kind: Ingress
 metadata:
   name: wellness-dev-ingress
   namespace: dev
-  annotations:
-    cert-manager.io/cluster-issuer: selfsigned-issuer
+ 
 spec:
   ingressClassName: nginx
 
   tls:
-  - hosts:
-    - dev.wellness.local
-    secretName: dev-wellness-tls
+    - hosts:
+        - dev.wellness.local
+      secretName: dev-wellness-tls
 
   rules:
   - host: dev.wellness.local
