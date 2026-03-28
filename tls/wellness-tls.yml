@@ -13,3 +13,4 @@ spec:
   commonName: wellness.local
   dnsNames:
     - wellness.local
+   

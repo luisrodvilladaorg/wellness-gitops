@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: dev-wellness-tls
+  namespace: dev
+spec:
+  secretName: dev-wellness-tls
+  issuerRef:
+    name: wellness-ca
+    kind: ClusterIssuer
+  commonName: dev.wellness.local
+  dnsNames:
+    - dev.wellness.local
