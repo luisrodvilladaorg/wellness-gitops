@@ -10,4 +10,4 @@ namespace: dev
 patchesStrategicMerge:
   - patch-image.yml
   - patch-replicas.yml
-  - patch-service-account.yml
+ 
