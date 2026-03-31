@@ -2,17 +2,20 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
+
 spec:
   replicas: 1
+
   strategy:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 0
       maxSurge: 1
+
   selector:
     matchLabels:
       app: frontend
-      
+
   template:
     metadata:
       labels:
@@ -22,11 +25,26 @@ spec:
       annotations:
         deployed-by: "luisrodvillada"
         description: "Frontend service for Wellness Ops application"
+
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 101
+        runAsGroup: 101
+        fsGroup: 101
+
       containers:
         - name: frontend-deployment
           image: ghcr.io/luisrodvilladaorg/wellness-ops-frontend:base
           imagePullPolicy: IfNotPresent
+
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
+
           ports:
             - containerPort: 80
 
@@ -48,11 +66,10 @@ spec:
             timeoutSeconds: 2
             failureThreshold: 3
 
-
           resources:
             requests:
               cpu: "50m"
               memory: "64Mi"
             limits:
               cpu: "200m"
-              memory: "128Mi"        
+              memory: "128Mi"
