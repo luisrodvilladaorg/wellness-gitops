@@ -23,9 +23,21 @@ spec:
         prometheus.io/scrape: "true"
 
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+
       initContainers:
       - name: wait-for-postgres
         image: ghcr.io/luisrodvilladaorg/wellness-ops-postgres-init:latest
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
         command:
           - sh
           - -c
@@ -39,6 +51,13 @@ spec:
       - name: backend
         image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:base
         imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          capabilities:
+            drop: ["ALL"]
 
         envFrom:
           - configMapRef:
@@ -84,6 +103,13 @@ spec:
 
       - name: log-sidecar
         image: busybox
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop: ["ALL"]
         command:
           - sh
           - -c
