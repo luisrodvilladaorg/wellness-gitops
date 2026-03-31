@@ -38,6 +38,7 @@ spec:
           allowPrivilegeEscalation: false
           capabilities:
             drop: ["ALL"]
+            add: ["NET_RAW"]
         command:
           - sh
           - -c
