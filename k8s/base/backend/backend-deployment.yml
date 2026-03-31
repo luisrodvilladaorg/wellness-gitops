@@ -34,7 +34,7 @@ spec:
         image: ghcr.io/luisrodvilladaorg/wellness-ops-postgres-init:latest
         securityContext:
           runAsNonRoot: true
-          runAsUser: 1000
+          runAsUser: 70
           allowPrivilegeEscalation: false
           capabilities:
             drop: ["ALL"]
