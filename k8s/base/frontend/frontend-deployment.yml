@@ -73,3 +73,15 @@ spec:
             limits:
               cpu: "200m"
               memory: "128Mi"
+
+          volumeMounts:
+            - name: cache
+              mountPath: /var/cache/nginx
+            - name: run
+              mountPath: /var/run
+
+      volumes:
+        - name: cache
+          emptyDir: {}
+        - name: run
+          emptyDir: {} 
