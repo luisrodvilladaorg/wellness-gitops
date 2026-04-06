@@ -4,6 +4,7 @@ kind: Kustomization
 
 resources:
   - ../../../base/backend
+  - backend-jwt-sealedsecret-dev.yml  
 
 namespace: dev
 

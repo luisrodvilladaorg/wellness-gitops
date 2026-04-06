@@ -6,7 +6,5 @@ resources:
   - backend-service.yml
   - backend-config.yml
   - backend-secret.yml
-  - backend-jwt-sealedsecret.yml
-  - backend-jwt-sealedsecret-dev.yml
   
     

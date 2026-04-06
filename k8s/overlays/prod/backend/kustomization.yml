@@ -6,5 +6,7 @@ namespace: default
 resources:
   - ../../../base/backend
 
+resources:
+  - backend-jwt-sealedsecret.yml
 patchesStrategicMerge:
   - patch-image.yml
