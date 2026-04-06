@@ -1,1 +1,2 @@
 k8s/base/backend/backend-jwt-secret-plain.yml
+k8s/base/backend/backend-jwt-secret-dev-plain.yml
