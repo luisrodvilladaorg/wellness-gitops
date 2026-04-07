@@ -11,7 +11,7 @@ Main GitOps repository and Kubernetes desired-state workspace synchronized by Ar
 GitOps repository that drives Wellness Kubernetes deployments from declarative state in Git.
 
 - Kustomize base and overlays for `dev` and `prod`.
-- Automated image updates from workflows in `wellnes-ops`.
+- Automated image updates from workflows in `wellness-ops`.
 - Continuous cluster synchronization through ArgoCD.
 - Network and exposure resources: ingress, TLS, and MetalLB configuration.
 - Declarative observability with backend `ServiceMonitor`.
@@ -22,7 +22,7 @@ Result: auditable and predictable deployments aligned with the GitOps model.
 ## Recruiter TL;DR
 
 - GitOps repository for Kubernetes desired state (`dev` and `prod`).
-- Image tags are updated from `wellnes-ops` by GitHub Actions.
+- Image tags are updated from `wellness-ops` by GitHub Actions.
 - ArgoCD continuously synchronizes cluster state from Git.
 - Networking and exposure are managed through ingress + TLS manifests.
 - Monitoring integration is defined with backend `ServiceMonitor`.
@@ -30,18 +30,18 @@ Result: auditable and predictable deployments aligned with the GitOps model.
 ## What this project does today
 
 - Maintains Kustomize base manifests and overlays for `dev` and `prod`.
-- Receives image-tag updates from `wellnes-ops` pipelines.
+- Receives image-tag updates from `wellness-ops` pipelines.
 - Serves as ArgoCD sync source for cluster reconciliation.
 
 ## Repository Model
 
-- `wellnes-ops`: application code, Dockerfiles, build/promotion workflows.
+- `wellness-ops`: application code, Dockerfiles, build/promotion workflows.
 - `wellness-gitops`: declarative deployment (K8s), ingress, TLS, and observability assets.
 
 Current flow summary:
 
-1. Push to `main` in `wellnes-ops` -> update `dev` overlays in this repo.
-2. Tag `v*.*.*` in `wellnes-ops` -> promote images to `prod` overlays in this repo.
+1. Push to `main` in `wellness-ops` -> update `dev` overlays in this repo.
+2. Tag `v*.*.*` in `wellness-ops` -> promote images to `prod` overlays in this repo.
 3. ArgoCD syncs the cluster to the desired state defined in this repo.
 
 ## Project Structure
