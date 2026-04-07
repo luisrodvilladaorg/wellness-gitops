@@ -7,5 +7,5 @@ spec:
     spec:
       containers:
         - name: backend
-          image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:8b8c2717bdf7c5a299ba1e6628a752afac0c798c
+          image: ghcr.io/luisrodvilladaorg/wellness-ops-backend:893723c080ac1089644b3bd08b3c08d17358e83b
           
