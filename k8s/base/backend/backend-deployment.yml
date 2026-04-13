@@ -31,7 +31,7 @@ spec:
 
       initContainers:
       - name: wait-for-postgres
-        image: ghcr.io/luisrodvilladaorg/wellness-ops-postgres-init:latest
+        image: docker pull ghcr.io/luisrodvilladaorg/wellness-ops-postgres-init:v1.0.0
         securityContext:
           runAsNonRoot: true
           runAsUser: 70
