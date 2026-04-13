@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: wellness
+  namespace: argocd
+spec:
+  description: wellness-ops project
+  # Solo permite este repo como fuente
+  sourceRepos:
+    - https://github.com/luisrodvilladaorg/wellness-gitops
+  # Solo permite desplegar en estos namespaces
+  destinations:
+    - namespace: default
+      server: https://kubernetes.default.svc
+    - namespace: dev
+      server: https://kubernetes.default.svc
+  # Solo estos recursos pueden ser desplegados
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
