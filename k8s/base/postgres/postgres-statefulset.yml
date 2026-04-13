@@ -29,6 +29,16 @@ spec:
           ports:
             - containerPort: 5432
 
+          # ✅ AÑADIDO — arranca postgres con SSL habilitado y apunta a los certs
+          command:
+            - docker-entrypoint.sh
+            - -c
+            - ssl=on
+            - -c
+            - ssl_cert_file=/etc/ssl/postgresql/server.crt
+            - -c
+            - ssl_key_file=/etc/ssl/postgresql/server.key
+
           envFrom:
             - secretRef:
                 name: postgres-secret
@@ -53,6 +63,10 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /var/lib/postgresql/data
+            # ✅ AÑADIDO — monta el Secret con los certs dentro del pod
+            - name: postgres-ssl
+              mountPath: /etc/ssl/postgresql
+              readOnly: true
 
           readinessProbe:
             exec:
@@ -79,6 +93,13 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
+
+      # ✅ AÑADIDO — declara el volumen que viene del Secret postgres-ssl
+      volumes:
+        - name: postgres-ssl
+          secret:
+            secretName: postgres-ssl
+            defaultMode: 0600
 
   volumeClaimTemplates:
     - metadata:
