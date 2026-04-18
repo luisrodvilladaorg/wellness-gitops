@@ -6,7 +6,12 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: wellness-ca
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"   
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "10"  # Disconnect if backend takes more than 10s to accept connection   
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "30"  # Disconnect if backend takes more than 30s to send a response    
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "30" # Disconnect if backend takes more than 30s to receive the request    
+    nginx.ingress.kubernetes.io/limit-rps: "10" # Max 10 requests per second per IP — blocks brute force and scrapers   
+    nginx.ingress.kubernetes.io/limit-connections: "5"  # Max 5 simultaneous connections per IP — prevents connection exhaustion
 spec:
   ingressClassName: nginx
   tls:
