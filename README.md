@@ -53,8 +53,10 @@ wellness-gitops/
 │   └── overlays/
 │       ├── dev/                 # Environment-specific patches (DEV)
 │       └── prod/                # Environment-specific patches (PROD)
-├── ingress/                     # HTTP ingress and issuer manifests
-├── ingress-dev/                 # DEV ingress host/path routing
+├── ingress/
+│   ├── custom-headers.yml       # Global ingress annotations/headers
+│   ├── ingress-default/         # Default ingress + issuer manifests
+│   └── ingress-dev/             # DEV ingress host/path routing
 ├── tls/                         # Certificate, issuer, and TLS ingress resources
 ├── metallb/                     # Bare-metal LoadBalancer IP pool/advertisement
 ├── monitoring/                  # ServiceMonitor and observability manifests
@@ -70,7 +72,7 @@ wellness-gitops/
 
 - `k8s/base/`: reusable base manifests for core services.
 - `k8s/overlays/`: environment overlays (`dev`, `prod`) where image patches are updated by CI/CD.
-- `ingress*` + `tls/`: external traffic entrypoint and HTTPS configuration.
+- `ingress/` + `tls/`: external traffic entrypoint and HTTPS configuration.
 - `metallb/`: load balancer setup for bare-metal clusters.
 - `monitoring/`: Prometheus Operator integration (`ServiceMonitor`).
 - `strategies-k8s/` and `rback/`: lab and learning assets for rollout/RBAC scenarios.
@@ -113,7 +115,9 @@ kubectl kustomize k8s/overlays/prod/backend
 - [k8s/base](k8s/base)
 - [k8s/overlays/dev](k8s/overlays/dev)
 - [k8s/overlays/prod](k8s/overlays/prod)
-- [ingress-dev/dev-ingress.yml](ingress-dev/dev-ingress.yml)
+- [ingress/custom-headers.yml](ingress/custom-headers.yml)
+- [ingress/ingress-dev/dev-ingress.yml](ingress/ingress-dev/dev-ingress.yml)
+- [ingress/ingress-default/ingress-http.yml](ingress/ingress-default/ingress-http.yml)
 - [tls/wellness-ingress.yml](tls/wellness-ingress.yml)
 - [monitoring/backend-servicemonitor.yml](monitoring/backend-servicemonitor.yml)
 

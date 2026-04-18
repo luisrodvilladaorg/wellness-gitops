@@ -3,7 +3,10 @@ kind: Ingress
 metadata:
   name: wellness-dev-ingress
   namespace: dev
- 
+  annotations: 
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "10"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "30" 
 spec:
   ingressClassName: nginx
 
