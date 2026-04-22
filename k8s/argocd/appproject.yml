@@ -9,6 +9,8 @@ spec:
     - https://github.com/luisrodvilladaorg/wellness-gitops
     - https://prometheus-community.github.io/helm-charts
   destinations:
+    - namespace: kube-system
+      server: https://kubernetes.default.svc
     - namespace: default
       server: https://kubernetes.default.svc
     - namespace: dev
@@ -20,6 +22,10 @@ spec:
   clusterResourceWhitelist:
     - group: ""
       kind: Namespace
+    - group: "admissionregistration.k8s.io"
+      kind: ValidatingWebhookConfiguration
+    - group: "admissionregistration.k8s.io"
+      kind: MutatingWebhookConfiguration  
     - group: "rbac.authorization.k8s.io"
       kind: ClusterRole
     - group: "rbac.authorization.k8s.io"
