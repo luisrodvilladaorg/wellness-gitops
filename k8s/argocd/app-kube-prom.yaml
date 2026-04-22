@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prom
+  namespace: argocd
+spec:
+  project: wellness
+  sources:
+    - repoURL: https://prometheus-community.github.io/helm-charts
+      chart: kube-prometheus-stack
+      targetRevision: 82.16.2
+      helm:
+        valueFiles:
+          - $values/monitoring/monitoring-k8s/kube-prom-values.yaml
+    - repoURL: https://github.com/luisrodvilladaorg/wellness-gitops
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
