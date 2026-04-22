@@ -1,0 +1,45 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: wellness-alerts
+  namespace: monitoring
+  labels:
+    release: kube-prom
+spec:
+  groups:
+    - name: wellness-ops
+      rules:
+        - alert: HighErrorRate
+          expr: |
+            sum(rate(nginx_ingress_controller_requests{status=~"5.."}[5m])) > 0
+            and
+            (
+              sum(rate(nginx_ingress_controller_requests{status=~"5.."}[5m]))
+              /
+              sum(rate(nginx_ingress_controller_requests[5m]))
+            ) > 0.05
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Alta tasa de errores 5xx"
+            description: "Más del 5% de requests están devolviendo 5xx en los últimos 5 minutos"
+        - alert: PodRestartingTooMuch
+          expr: |
+            increase(kube_pod_container_status_restarts_total{namespace=~"default|dev"}[15m]) > 5
+          for: 0m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Pod reiniciando demasiado"
+            description: "El pod {{ $labels.pod }} en namespace {{ $labels.namespace }} ha reiniciado más de 5 veces en 15 minutos"
+
+        - alert: PostgresDown
+          expr: |
+            kube_pod_status_phase{namespace=~"default|dev", pod=~"postgres.*"} != 1
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "PostgreSQL no está corriendo"
+            description: "El pod {{ $labels.pod }} en {{ $labels.namespace }} no está en estado Running"

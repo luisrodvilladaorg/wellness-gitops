@@ -1,0 +1,25 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: wellness-alertmanager-config
+  namespace: monitoring
+  labels:
+    release: kube-prom
+spec:
+  route:
+    receiver: gmail
+    groupBy: ['alertname', 'severity']
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 12h
+  receivers:
+    - name: gmail
+      emailConfigs:
+        - to: luisfernando198912@gmail.com
+          from: luisfernando198912@gmail.com
+          smarthost: smtp.gmail.com:587
+          authUsername: luisfernando198912@gmail.com
+          authPassword:
+            name: alertmanager-gmail
+            key: password
+          requireTLS: true
