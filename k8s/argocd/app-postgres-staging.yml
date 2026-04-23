@@ -1,8 +1,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: postgres-prod
-  namespace: argocd
+  name: postgres-staging
+  namespace: staging
 spec:
   project: wellness
   source:

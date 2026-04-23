@@ -351,3 +351,184 @@ kubectl port-forward -n monitoring svc/alertmanager-operated 9093:9093 --address
 - [ ] SLO mini — `docs/SLO.md` (API availability 99.5% + alertas)
 - [ ] Secret `alertmanager-gmail` — documentar proceso de rotación
 - [ ] Incorporar Loki a GitOps (actualmente instalado con Helm directo igual que kube-prom era antes)
+
+## SLO-2b — Latencia de la API
+
+**SLI:** Porcentaje de requests HTTP que responden en menos de 500ms.
+
+**Query Prometheus:**
+```promql
+sum(rate(wellness_http_request_duration_seconds_bucket{le="0.5"}[5m]))
+/
+sum(rate(wellness_http_request_duration_seconds_count[5m]))
+```
+
+**Objetivo:** `>= 95%` de requests bajo 500ms en ventana de 30 días  
+**Error Budget:** `5%` — hasta 1 de cada 20 requests puede superar 500ms  
+**Referencia P95 actual:** ~700ms en ruta `/` (health check del cluster)  
+**Alerta sugerida:** Cuando P95 supere 1s durante 5 minutos
+
+# Observability Lab — Parte 2
+**Fecha:** 22 de abril de 2026  
+**Continuación de:** OBSERVABILITY-LAB.md
+
+---
+
+## Parte 5 — prom-client + ServiceMonitor
+
+### Situación inicial
+El backend ya tenía `prom-client` implementado con métricas custom, pero Prometheus no las estaba raspando por dos razones:
+1. El endpoint `/metrics` no estaba expuesto via Ingress (correcto — no debe estarlo)
+2. El ServiceMonitor tenía el label incorrecto
+
+### Verificar que /metrics funciona internamente
+```bash
+kubectl exec -n default deploy/backend -- wget -qO- http://localhost:3000/metrics | head -20
+# Devuelve métricas wellness_backend_* — CPU, memoria, HTTP requests, duración
+```
+
+**Por qué no via Ingress:** Exponer `/metrics` públicamente es un riesgo de seguridad — revela información interna del sistema. Prometheus accede directamente al pod via ServiceMonitor, sin pasar por el Ingress.
+
+### Fix del ServiceMonitor
+El label `release` debe coincidir con el selector de Prometheus:
+
+```bash
+kubectl get prometheus -n monitoring -o yaml | grep -A5 ruleSelector
+# serviceMonitorSelector:
+#   matchLabels:
+#     release: kube-prom
+```
+
+**Antes (incorrecto):**
+```yaml
+labels:
+  release: monitoring
+```
+
+**Después (correcto):**
+```yaml
+labels:
+  release: kube-prom
+```
+
+### ServiceMonitor final
+```yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: backend-monitoring
+  namespace: monitoring
+  labels:
+    release: kube-prom
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  namespaceSelector:
+    matchNames:
+      - default
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
+```
+
+**Por qué `port: http` y no `port: 3000`:** El ServiceMonitor referencia el nombre del puerto definido en el Service, no el número. El Service tiene `name: http` en el puerto 3000.
+
+### Verificar que Prometheus raspa el backend
+En la UI de Prometheus → Status → Targets → buscar `backend-monitoring` → estado `UP`.
+
+Query para verificar métricas:
+```promql
+wellness_http_requests_total
+```
+
+Resultado esperado — series por pod, route y status:
+```
+wellness_http_requests_total{pod="backend-xxx", route="/", status="200"} 4754
+wellness_http_requests_total{pod="backend-yyy", route="/", status="200"} 4754
+```
+
+---
+
+## Parte 6 — Dashboard custom wellness-ops / Backend
+
+### Panels creados
+
+| Panel | Query | Visualización |
+|---|---|---|
+| HTTP Request Rate | `sum(rate(wellness_http_requests_total[5m])) by (route, status)` | Time series |
+| HTTP Error Rate 5xx | `sum(rate(wellness_http_requests_total{status=~"5.."}[5m])) by (route)` | Time series |
+| Request Duration P95 | `histogram_quantile(0.95, sum(rate(wellness_http_request_duration_seconds_bucket[5m])) by (le, route))` | Time series (unit: seconds) |
+| Total Requests by Status | `sum(wellness_http_requests_total) by (status)` | Stat |
+
+### Observaciones del dashboard
+- P95 latencia en ruta `/` → ~700ms (health check del cluster, request ligero)
+- Error Rate 5xx → No data (correcto, no hay errores reales)
+- Total requests → 10014 status 200, 1 status 404 (el curl de prueba a `/api/metrics`)
+
+### Exportar y versionar
+El dashboard se exporta desde Grafana → Share → Export → Export for sharing externally → Download JSON.
+
+En Grafana 12 hay que salir del modo edición primero (**Exit edit**) antes de poder acceder a la opción de exportar.
+
+Archivo guardado en:
+```
+wellness-gitops/monitoring/monitoring-k8s/dashboards/wellness-ops-backend.json
+```
+
+---
+
+## Parte 7 — SLO de latencia (SLO-2b)
+
+Añadido a `docs/SLO.md` en el repo `wellness-ops`.
+
+### SLO-2b — Latencia de la API
+
+**SLI:** Porcentaje de requests HTTP que responden en menos de 500ms.
+
+**Query Prometheus:**
+```promql
+sum(rate(wellness_http_request_duration_seconds_bucket{le="0.5"}[5m]))
+/
+sum(rate(wellness_http_request_duration_seconds_count[5m]))
+```
+
+**Objetivo:** `>= 95%` de requests bajo 500ms en ventana de 30 días  
+**Error Budget:** `5%` — hasta 1 de cada 20 requests puede superar 500ms  
+**Referencia P95 actual:** ~700ms en ruta `/`  
+**Alerta sugerida:** Cuando P95 supere 1s durante 5 minutos
+
+### Por qué usar el bucket `le="0.5"` y no P95 directamente
+El SLI de latencia se define sobre un umbral fijo (500ms) porque es más fácil de interpretar como contrato de servicio. El P95 es una métrica de monitoreo — te dice dónde está el percentil 95, pero no si estás cumpliendo el objetivo.
+
+---
+
+## Métricas disponibles en el backend
+
+| Métrica | Tipo | Descripción |
+|---|---|---|
+| `wellness_backend_process_cpu_seconds_total` | Counter | CPU consumida por el proceso |
+| `wellness_backend_process_resident_memory_bytes` | Gauge | Memoria RSS del proceso |
+| `wellness_http_requests_total` | Counter | Total requests por method, route, status |
+| `wellness_http_request_duration_seconds` | Histogram | Duración de requests con buckets: 0.1, 0.3, 0.5, 1, 2, 5s |
+
+---
+
+## Roadmap completado
+
+| Punto | Estado |
+|---|---|
+| Dashboards versionados (5 JSON + 1 custom) | ✅ |
+| kube-prom incorporado a GitOps (ArgoCD) | ✅ |
+| Alertmanager activado + Gmail SMTP | ✅ |
+| PrometheusRule — 3 alertas | ✅ |
+| prom-client + ServiceMonitor corregido | ✅ |
+| Dashboard custom wellness-ops/Backend | ✅ |
+| SLO.md completo (disponibilidad + latencia + postgres) | ✅ |
+
+## Pendientes futuros
+- [ ] Alerta de latencia — `HighP95Latency` cuando P95 > 1s durante 5 minutos
+- [ ] Dashboard Grafana con burn rate del error budget
+- [ ] Incorporar Loki a GitOps (actualmente Helm directo)
+- [ ] Replicar stack completo en namespace `default` para portfolio público
