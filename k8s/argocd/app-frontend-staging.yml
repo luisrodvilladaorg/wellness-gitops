@@ -2,16 +2,16 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: frontend-staging
-  namespace: staging
+  namespace: argocd
 spec:
   project: wellness
   source:
     repoURL: https://github.com/luisrodvilladaorg/wellness-gitops
     targetRevision: main
-    path: k8s/overlays/prod/frontend
+    path: k8s/overlays/staging/frontend
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
+    namespace: staging
   syncPolicy:
     automated:
       prune: true
