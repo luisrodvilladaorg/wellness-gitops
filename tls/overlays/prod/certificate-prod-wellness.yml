@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: prod-wellness-tls
+  namespace: prod
+spec:
+  secretName: prod-wellness-tls
+  duration: 2160h
+  renewBefore: 360h
+  issuerRef:
+    name: wellness-ca
+    kind: ClusterIssuer
+  commonName: wellness.local
+  dnsNames:
+    - wellness.local
