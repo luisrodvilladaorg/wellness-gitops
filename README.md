@@ -10,18 +10,18 @@ Main GitOps repository and Kubernetes desired-state workspace synchronized by Ar
 
 GitOps repository that drives Wellness Kubernetes deployments from declarative state in Git.
 
-- Kustomize base and overlays for `dev` and `prod`.
+- Kustomize base and overlays for `dev`, `staging`, and `prod`.
 - Automated image updates from workflows in `wellness-ops`.
 - Continuous cluster synchronization through ArgoCD.
 - Network and exposure resources: ingress, TLS, and MetalLB configuration.
 - Declarative observability with backend `ServiceMonitor`.
-- `dev` to `prod` promotion driven by semantic tags.
+- Promotion path `dev` -> `staging` -> `prod` driven by semantic tags.
 
 Result: auditable and predictable deployments aligned with the GitOps model.
 
 ## Recruiter TL;DR
 
-- GitOps repository for Kubernetes desired state (`dev` and `prod`).
+- GitOps repository for Kubernetes desired state (`dev`, `staging`, `prod`).
 - Image tags are updated from `wellness-ops` by GitHub Actions.
 - ArgoCD continuously synchronizes cluster state from Git.
 - Networking and exposure are managed through ingress + TLS manifests.
@@ -29,7 +29,7 @@ Result: auditable and predictable deployments aligned with the GitOps model.
 
 ## What this project does today
 
-- Maintains Kustomize base manifests and overlays for `dev` and `prod`.
+- Maintains Kustomize base manifests and overlays for `dev`, `staging`, and `prod`.
 - Receives image-tag updates from `wellness-ops` pipelines.
 - Serves as ArgoCD sync source for cluster reconciliation.
 
@@ -41,8 +41,9 @@ Result: auditable and predictable deployments aligned with the GitOps model.
 Current flow summary:
 
 1. Push to `main` in `wellness-ops` -> update `dev` overlays in this repo.
-2. Tag `v*.*.*` in `wellness-ops` -> promote images to `prod` overlays in this repo.
-3. ArgoCD syncs the cluster to the desired state defined in this repo.
+2. Tag `v*.*.*-rc.*` in `wellness-ops` -> update `staging` overlays in this repo.
+3. Tag `v*.*.*` in release flow -> update `prod` overlays in this repo.
+4. ArgoCD syncs each namespace to the desired state defined in this repo.
 
 ## Project Structure
 
@@ -52,11 +53,13 @@ wellness-gitops/
 │   ├── base/                    # Base workloads: backend, frontend, postgres
 │   └── overlays/
 │       ├── dev/                 # Environment-specific patches (DEV)
+│       ├── staging/             # Environment-specific patches (STAGING)
 │       └── prod/                # Environment-specific patches (PROD)
 ├── ingress/
 │   ├── custom-headers.yml       # Global ingress annotations/headers
-│   ├── ingress-default/         # Default ingress + issuer manifests
-│   └── ingress-dev/             # DEV ingress host/path routing
+│   ├── dev/                     # DEV ingress host/path routing
+│   ├── staging/                 # STAGING ingress host/path routing
+│   └── prod/                    # PROD ingress host/path routing
 ├── tls/                         # Certificate, issuer, and TLS ingress resources
 ├── metallb/                     # Bare-metal LoadBalancer IP pool/advertisement
 ├── monitoring/                  # ServiceMonitor and observability manifests
@@ -71,7 +74,7 @@ wellness-gitops/
 ### Folder guide
 
 - `k8s/base/`: reusable base manifests for core services.
-- `k8s/overlays/`: environment overlays (`dev`, `prod`) where image patches are updated by CI/CD.
+- `k8s/overlays/`: environment overlays (`dev`, `staging`, `prod`) where image patches are updated by CI/CD.
 - `ingress/` + `tls/`: external traffic entrypoint and HTTPS configuration.
 - `metallb/`: load balancer setup for bare-metal clusters.
 - `monitoring/`: Prometheus Operator integration (`ServiceMonitor`).
@@ -107,18 +110,31 @@ tree -L 3 k8s/
 
 ```bash
 kubectl kustomize k8s/overlays/dev/backend
+kubectl kustomize k8s/overlays/staging/backend
 kubectl kustomize k8s/overlays/prod/backend
 ```
+
+## Environment status and pending captures
+
+All three environments are currently active in cluster operations: `dev`, `staging`, `prod`.
+
+- TODO: add DEV capture (pods + ArgoCD sync).
+- TODO: add STAGING capture (pods + ArgoCD sync).
+- TODO: add PROD capture (pods + ArgoCD sync).
 
 ## Resources
 
 - [k8s/base](k8s/base)
 - [k8s/overlays/dev](k8s/overlays/dev)
+- [k8s/overlays/staging](k8s/overlays/staging)
 - [k8s/overlays/prod](k8s/overlays/prod)
 - [ingress/custom-headers.yml](ingress/custom-headers.yml)
-- [ingress/ingress-dev/dev-ingress.yml](ingress/ingress-dev/dev-ingress.yml)
-- [ingress/ingress-default/ingress-http.yml](ingress/ingress-default/ingress-http.yml)
-- [tls/wellness-ingress.yml](tls/wellness-ingress.yml)
+- [ingress/dev/dev-ingress.yml](ingress/dev/dev-ingress.yml)
+- [ingress/staging/staging-ingress.yml](ingress/staging/staging-ingress.yml)
+- [ingress/prod/prod-ingress.yml](ingress/prod/prod-ingress.yml)
+- [tls/overlays/dev](tls/overlays/dev)
+- [tls/overlays/staging](tls/overlays/staging)
+- [tls/overlays/prod](tls/overlays/prod)
 - [monitoring/backend-servicemonitor.yml](monitoring/backend-servicemonitor.yml)
 
 ## License
