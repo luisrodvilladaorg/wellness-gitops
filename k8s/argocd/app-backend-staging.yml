@@ -8,10 +8,10 @@ spec:
   source:
     repoURL: https://github.com/luisrodvilladaorg/wellness-gitops
     targetRevision: main
-    path: k8s/overlays/prod/backend
+    path: k8s/overlays/staging/backend
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
+    namespace: staging
   syncPolicy:
     automated:
       prune: true
