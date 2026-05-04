@@ -6,4 +6,4 @@ namespace: staging
 resources:
   - ../../../base/postgres
   - postgres-ssl-sealedsecret.yml
-  - postgres-secret-sealedsecret.yml
+  
