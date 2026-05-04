@@ -1,17 +1,55 @@
 alertmanager:
   enabled: true
+  alertmanagerSpec:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 100m
+        memory: 128Mi
 
 grafana:
-  adminPassword: admin123
   enabled: true
+  adminPassword: admin123
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
+      searchNamespace: ALL
 
 prometheus:
   prometheusSpec:
+    retention: 24h
     resources:
-      limits:
-        cpu: 500m
-        memory: 512Mi
       requests:
         cpu: 100m
         memory: 256Mi
-    retention: 24h
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    ruleSelector:
+      matchLabels:
+        release: kube-prom
+    serviceMonitorSelector:
+      matchLabels:
+        release: kube-prom
+    serviceMonitorNamespaceSelector: {}
+    podMonitorNamespaceSelector: {}
+
+prometheusOperator:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
