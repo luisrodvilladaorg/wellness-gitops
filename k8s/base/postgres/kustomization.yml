@@ -4,6 +4,5 @@ kind: Kustomization
 resources:
   - postgres-init-configmap.yml
   - postgres-job.yml
-  - postgres-secret.yml
   - postgres-service.yml
   - postgres-statefulset.yml
