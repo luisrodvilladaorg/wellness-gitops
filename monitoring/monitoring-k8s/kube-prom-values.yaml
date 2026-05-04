@@ -31,6 +31,11 @@ grafana:
       url: http://loki.monitoring.svc.cluster.local:3100
       access: proxy
       isDefault: false
+  plugins:
+    - grafana-lokiexplore-app
+  grafana.ini:
+    feature_toggles:
+      enable: lokiExploreLogsPanel    
 
 prometheus:
   prometheusSpec:
