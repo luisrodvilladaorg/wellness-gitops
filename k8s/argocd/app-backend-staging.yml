@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: backend-staging
-  namespace: staging
+  namespace: argocd
 spec:
   project: wellness
   source:
