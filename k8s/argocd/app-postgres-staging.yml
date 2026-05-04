@@ -2,16 +2,16 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: postgres-staging
-  namespace: staging
+  namespace: argocd
 spec:
   project: wellness
   source:
     repoURL: https://github.com/luisrodvilladaorg/wellness-gitops
     targetRevision: main
-    path: k8s/overlays/prod/postgres
+    path: k8s/overlays/staging/postgres
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
+    namespace: staging
   syncPolicy:
     automated:
       prune: true
