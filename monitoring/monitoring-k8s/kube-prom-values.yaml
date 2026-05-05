@@ -31,6 +31,9 @@ grafana:
       url: http://loki.monitoring.svc.cluster.local:3100
       access: proxy
       isDefault: false
+      orgId: 1
+      jsonData:
+        maxLines: 1000
   plugins:
     - grafana-lokiexplore-app
   grafana.ini:
