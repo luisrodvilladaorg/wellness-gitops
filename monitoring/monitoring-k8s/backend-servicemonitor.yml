@@ -11,7 +11,9 @@ spec:
       app: backend
   namespaceSelector:
     matchNames:
-      - default
+      - dev
+      - staging
+      - prod
   endpoints:
     - port: http
       path: /metrics
