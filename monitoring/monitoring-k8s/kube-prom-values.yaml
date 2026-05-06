@@ -1,6 +1,8 @@
 alertmanager:
   enabled: true
   alertmanagerSpec:
+    secrets:
+      - alertmanager-gmail
     resources:
       requests:
         cpu: 50m
@@ -8,6 +10,41 @@ alertmanager:
       limits:
         cpu: 100m
         memory: 128Mi
+  config:
+    global:
+      resolve_timeout: 5m
+      smtp_smarthost: 'smtp.gmail.com:587'
+      smtp_from: 'luisfernando198912@gmail.com'
+      smtp_auth_username: 'luisfernando198912@gmail.com'
+      smtp_auth_password_file: /etc/alertmanager/secrets/alertmanager-gmail/gmail-password
+      smtp_require_tls: true
+    route:
+      group_by: ['namespace', 'alertname']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      receiver: 'gmail'
+      routes:
+        - matchers:
+            - alertname = "Watchdog"
+          receiver: 'null'
+    receivers:
+      - name: 'null'
+      - name: 'gmail'
+        email_configs:
+          - to: 'luisfernando198912@gmail.com'
+            send_resolved: true
+    inhibit_rules:
+      - source_matchers:
+          - severity = critical
+        target_matchers:
+          - severity =~ warning|info
+        equal: ['namespace', 'alertname']
+      - source_matchers:
+          - severity = warning
+        target_matchers:
+          - severity = info
+        equal: ['namespace', 'alertname']
 
 grafana:
   enabled: true
