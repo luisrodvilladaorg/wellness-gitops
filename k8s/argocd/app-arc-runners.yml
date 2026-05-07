@@ -6,9 +6,9 @@ metadata:
 spec:
   project: wellness
   source:
-    repoURL: oci://ghcr.io/actions/actions-runner-controller-charts
+    repoURL: https://actions-runner-controller.github.io/actions-runner-controller
     chart: gha-runner-scale-set
-    targetRevision: 0.14.0
+    targetRevision: 0.10.1
     helm:
       values: |
         githubConfigUrl: https://github.com/luisrodvilladaorg
