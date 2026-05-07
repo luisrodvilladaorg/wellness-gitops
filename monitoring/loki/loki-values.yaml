@@ -18,6 +18,12 @@ loki:
   compactor:
     retention_enabled: true
     delete_request_store: filesystem
+  ingester:
+    lifecycler:
+      ring:
+        kvstore:
+          store: inmemory
+        replication_factor: 1
 
 deploymentMode: SingleBinary
 
