@@ -6,6 +6,7 @@ metadata:
 spec:
   description: wellness-ops project
   sourceRepos:
+    - oci://ghcr.io/actions/actions-runner-controller-charts
     - https://actions-runner-controller.github.io/actions-runner-controller
     - https://github.com/luisrodvilladaorg/wellness-gitops
     - https://prometheus-community.github.io/helm-charts
