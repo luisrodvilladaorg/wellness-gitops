@@ -26,10 +26,10 @@ singleBinary:
   resources:
     requests:
       cpu: 100m
-      memory: 256Mi
-    limits:
-      cpu: 300m
       memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
   persistence:
     enabled: true
     size: 5Gi
