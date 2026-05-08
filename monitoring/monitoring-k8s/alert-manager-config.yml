@@ -12,6 +12,15 @@ spec:
     groupWait: 30s
     groupInterval: 5m
     repeatInterval: 12h
+    routes:
+      - matchers:
+          - name: alertname
+            value: InfoInhibitor
+        receiver: "null"
+      - matchers:
+          - name: severity
+            value: none
+        receiver: "null"
   receivers:
     - name: gmail
       emailConfigs:
@@ -23,3 +32,4 @@ spec:
             name: alertmanager-gmail
             key: password
           requireTLS: true
+    - name: "null"
