@@ -34,6 +34,10 @@ alertmanager:
         - matchers:
             - severity = "none"
           receiver: 'null'
+        - matchers:
+            - severity = "info"
+          receiver: 'null'
+          
     receivers:
       - name: 'null'
       - name: 'gmail'
