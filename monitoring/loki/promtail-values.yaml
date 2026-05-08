@@ -35,6 +35,9 @@ config:
             source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
             target_label: app_name
             regex: (.+)
+          - action: drop
+            source_labels: [__meta_kubernetes_namespace]
+            regex: arc-runners|arc-systems
           - replacement: /var/log/pods/*/*/*.log
             target_label: __path__
 resources:
@@ -43,7 +46,7 @@ resources:
     memory: 128Mi
   limits:
     cpu: 200m
-    memory: 256Mi
+    memory: 512Mi
 tolerations:
   - key: node-role.kubernetes.io/control-plane
     operator: Exists
