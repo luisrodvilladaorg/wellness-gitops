@@ -28,6 +28,12 @@ alertmanager:
         - matchers:
             - alertname = "Watchdog"
           receiver: 'null'
+        - matchers:
+            - alertname = "InfoInhibitor"
+          receiver: 'null'
+        - matchers:
+            - severity = "none"
+          receiver: 'null'
     receivers:
       - name: 'null'
       - name: 'gmail'
@@ -75,7 +81,7 @@ grafana:
     - grafana-lokiexplore-app
   grafana.ini:
     feature_toggles:
-      enable: lokiExploreLogsPanel    
+      enable: lokiExploreLogsPanel
 
 prometheus:
   prometheusSpec:
