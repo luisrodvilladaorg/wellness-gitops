@@ -1,9 +1,10 @@
+# k8s/overlays/staging/postgres/kustomization.yml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
-namespace: staging
-
 resources:
   - ../../../base/postgres
+  - postgres-secret-sealedsecret.yml
   - postgres-ssl-sealedsecret.yml
-  
+namespace: staging
+patchesStrategicMerge:
+  - patch-affinity.yml

@@ -1,13 +1,9 @@
+# k8s/overlays/dev/frontend/kustomization.yml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
 resources:
   - ../../../base/frontend
-
 namespace: dev
-
-commonLabels:
-  env: dev
-
 patchesStrategicMerge:
-  - patch-image.yml  
+  - patch-image.yml
+  - patch-affinity.yml
