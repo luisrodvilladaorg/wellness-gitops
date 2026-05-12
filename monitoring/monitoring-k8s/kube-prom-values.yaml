@@ -1,3 +1,6 @@
+defaultRules:
+  rules:
+    etcd: false
 alertmanager:
   enabled: true
   alertmanagerSpec:
