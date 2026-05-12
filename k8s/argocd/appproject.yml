@@ -11,6 +11,8 @@ spec:
     - https://prometheus-community.github.io/helm-charts
     - https://grafana.github.io/helm-charts
   destinations:
+    - namespace: cloudflare-tunnel
+      server: https://kubernetes.default.svc
     - namespace: arc-systems
       server: https://kubernetes.default.svc
     - namespace: arc-runners
