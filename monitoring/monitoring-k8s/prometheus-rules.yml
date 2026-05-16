@@ -26,7 +26,7 @@ spec:
             description: "Más del 5% de requests están devolviendo 5xx en los últimos 5 minutos"
         - alert: PodRestartingTooMuch
           expr: |
-            increase(kube_pod_container_status_restarts_total{namespace=~"default|dev"}[15m]) > 5
+            increase(kube_pod_container_status_restarts_total{namespace=~"prod|staging|dev"}[15m]) > 5
           for: 0m
           labels:
             severity: warning
@@ -36,8 +36,12 @@ spec:
 
         - alert: PostgresDown
           expr: |
-            kube_pod_status_phase{namespace=~"default|dev", pod=~"postgres.*"} != 1
-          for: 1m
+            kube_pod_status_phase{
+              namespace=~"dev|prod",
+              pod=~"postgres-[0-9]+$",
+              phase="Running"
+            } == 0
+          for: 5m
           labels:
             severity: critical
           annotations:
