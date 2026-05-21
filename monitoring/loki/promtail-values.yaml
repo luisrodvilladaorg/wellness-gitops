@@ -37,7 +37,7 @@ config:
             regex: (.+)
           - action: drop
             source_labels: [__meta_kubernetes_namespace]
-            regex: arc-runners|arc-systems
+            regex: arc-runners|arc-systems|longhorn-system|metallb-system|velero|cert-manager
           - replacement: /var/log/pods/*/*/*.log
             target_label: __path__
 resources:
