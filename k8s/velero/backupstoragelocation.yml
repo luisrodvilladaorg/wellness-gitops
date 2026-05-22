@@ -1,0 +1,15 @@
+apiVersion: velero.io/v1
+kind: BackupStorageLocation
+metadata:
+  name: default
+  namespace: velero
+spec:
+  provider: aws
+  default: true
+  objectStorage:
+    bucket: wellness-ops-velero-backups
+  config:
+    region: eu-west-1
+  credential:
+    name: cloud-credentials
+    key: cloud

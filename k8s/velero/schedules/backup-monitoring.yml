@@ -1,0 +1,14 @@
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: backup-monitoring
+  namespace: velero
+spec:
+  schedule: "15 2 * * 0"
+  skipImmediately: false
+  template:
+    includedNamespaces:
+      - monitoring
+    ttl: 720h0m0s
+    metadata: {}
+    hooks: {}

@@ -1,0 +1,14 @@
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: backup-prod
+  namespace: velero
+spec:
+  schedule: "30 2 * * 0"
+  skipImmediately: false
+  template:
+    includedNamespaces:
+      - prod
+    ttl: 720h0m0s
+    metadata: {}
+    hooks: {}

@@ -31,16 +31,26 @@ spec:
       server: https://kubernetes.default.svc
     - namespace: argocd
       server: https://kubernetes.default.svc
+    - namespace: velero
+      server: https://kubernetes.default.svc
   clusterResourceWhitelist:
     - group: ""
       kind: Namespace
     - group: "admissionregistration.k8s.io"
       kind: ValidatingWebhookConfiguration
     - group: "admissionregistration.k8s.io"
-      kind: MutatingWebhookConfiguration  
+      kind: MutatingWebhookConfiguration
     - group: "rbac.authorization.k8s.io"
       kind: ClusterRole
     - group: "rbac.authorization.k8s.io"
       kind: ClusterRoleBinding
     - group: "apiextensions.k8s.io"
       kind: CustomResourceDefinition
+    - group: "velero.io"
+      kind: BackupStorageLocation
+    - group: "velero.io"
+      kind: Schedule
+    - group: "velero.io"
+      kind: Backup
+    - group: "velero.io"
+      kind: Restore
