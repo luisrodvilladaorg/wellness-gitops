@@ -24,6 +24,7 @@ spec:
           annotations:
             summary: "Alta tasa de errores 5xx"
             description: "Más del 5% de requests están devolviendo 5xx en los últimos 5 minutos"
+
         - alert: PodRestartingTooMuch
           expr: |
             increase(kube_pod_container_status_restarts_total{namespace=~"prod|staging|dev"}[15m]) > 5
@@ -47,3 +48,15 @@ spec:
           annotations:
             summary: "PostgreSQL no está corriendo"
             description: "El pod {{ $labels.pod }} en {{ $labels.namespace }} no está en estado Running"
+
+        - alert: HighP95Latency
+          expr: |
+            histogram_quantile(0.95,
+              sum(rate(wellness_http_request_duration_seconds_bucket{namespace=~"prod|staging"}[5m])) by (le, namespace, route)
+            ) > 0.5
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Alta latencia P95 en {{ $labels.namespace }}"
+            description: "El percentil 95 de latencia en la ruta {{ $labels.route }} del namespace {{ $labels.namespace }} supera los 500ms"
