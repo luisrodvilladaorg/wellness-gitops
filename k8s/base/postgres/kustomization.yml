@@ -6,3 +6,4 @@ resources:
   - postgres-job.yml
   - postgres-service.yml
   - postgres-statefulset.yml
+  - network-policy.yml

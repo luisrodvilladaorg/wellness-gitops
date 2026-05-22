@@ -15,7 +15,7 @@ spec:
       labels:
         app: backend
         env: prod
-        version: v2.1.14
+        version: v2.1.21
       annotations:
         deployed-by: luisrodvillada
         description: Backend service for Wellness Ops application
@@ -98,32 +98,5 @@ spec:
             exec:
               command: ["sh", "-c", "sleep 5"]
 
-        volumeMounts:
-          - name: backend-logs
-            mountPath: /logs
 
-      - name: log-sidecar
-        image: busybox
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 1000
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          capabilities:
-            drop: ["ALL"]
-        command:
-          - sh
-          - -c
-          - |
-            mkdir -p /logs
-            touch /logs/app.log
-            echo "Sidecar started..."
-            tail -n+1 -F /logs/app.log
-
-        volumeMounts:
-          - name: backend-logs
-            mountPath: /logs
-
-      volumes:
-        - name: backend-logs
-          emptyDir: {}
+      

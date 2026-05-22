@@ -6,5 +6,6 @@ resources:
   - backend-service.yml
   - backend-config.yml
   - backend-secret.yml
+  - network-policy.yml
   
     

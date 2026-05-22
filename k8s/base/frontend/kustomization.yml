@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - frontend-deployment.yml
   - frontend-service.yml
+  - network-policy.yml
