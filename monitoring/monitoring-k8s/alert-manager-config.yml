@@ -33,3 +33,4 @@ spec:
             key: password
           requireTLS: true
     - name: "null"
+      emailConfigs: []
