@@ -30,6 +30,6 @@ spec:
           authUsername: luisfernando198912@gmail.com
           authPassword:
             name: alertmanager-gmail
-            key: password
+            key: gmail-password
           requireTLS: true
     - name: "null"
