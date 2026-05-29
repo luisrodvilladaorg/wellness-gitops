@@ -95,10 +95,10 @@ prometheus:
     retention: 24h
     resources:
       requests:
-        cpu: 100m
+        cpu: 250m
         memory: 256Mi
       limits:
-        cpu: 500m
+        cpu: "1"
         memory: 512Mi
     ruleSelector:
       matchLabels:
