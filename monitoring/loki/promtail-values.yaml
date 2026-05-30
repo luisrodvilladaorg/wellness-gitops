@@ -42,10 +42,10 @@ config:
             target_label: __path__
 resources:
   requests:
-    cpu: 50m
+    cpu: 100m
     memory: 128Mi
   limits:
-    cpu: 200m
+    cpu: 500m
     memory: 512Mi
 tolerations:
   - key: node-role.kubernetes.io/control-plane
