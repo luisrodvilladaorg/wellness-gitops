@@ -9,3 +9,4 @@ patchesStrategicMerge:
   - patch-image.yml
   - patch-replicas.yml
   - patch-affinity.yml
+  - patch-revision-history-limit.yml
