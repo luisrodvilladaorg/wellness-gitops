@@ -28,6 +28,7 @@ spec:
         - podSelector:
             matchLabels:
               app: postgres
+
     - to:
         - namespaceSelector:
             matchLabels:
@@ -36,4 +37,13 @@ spec:
         - port: 53
           protocol: UDP
         - port: 53
+          protocol: TCP
+    
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+      ports:
+        - port: 80
+          protocol: TCP
+        - port: 443
           protocol: TCP
