@@ -38,11 +38,14 @@ spec:
             periodSeconds: 5
 
           livenessProbe:
-            httpGet:
-              path: /api/health
-              port: 3000
+            exec:
+              command:
+                - sh
+                - -c
+                - pg_isready -U postgres
             initialDelaySeconds: 30
             periodSeconds: 10
+
 
           resources:
             requests:
