@@ -4,4 +4,4 @@ metadata:
   name: backend-config
 data:
   NODE_ENV: development
-  DB_SSL: "true"
+  
