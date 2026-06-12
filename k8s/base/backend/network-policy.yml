@@ -13,10 +13,7 @@ spec:
     - from:
         - podSelector:
             matchLabels:
-              app: frontend
-        - podSelector:
-            matchLabels:
-              role: debug    
+              app: frontend      
     - from:
         - namespaceSelector:
             matchLabels:
