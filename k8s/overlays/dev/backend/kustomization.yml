@@ -10,3 +10,4 @@ patches:
   - path: patch-affinity.yml
   - path: patch-revision-history-limit.yml
   - path: patch-configmap.yml
+  - path: patch-sidecar.yaml
